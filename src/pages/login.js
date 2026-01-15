@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { apiPOST } from "../apis/service";
 function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -8,18 +8,31 @@ function Login() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
+    const res = await apiPOST("api/auth/login", form);
     // MOCK LOGIN
-    if (form.email && form.password) {
-      localStorage.setItem("coupleAuth", "true");
-      navigate("/dashboard/1");
-    }
+     setLoading(false);
+      if (res?.token) {
+    localStorage.setItem("token", res.token);
+    localStorage.setItem("user", JSON.stringify(res.user));
+    localStorage.setItem("coupleAuth", "true");
+
+    navigate(`/dashboard/${res.user.id}`);
+  } else {
+    setError(res?.message || "Login failed");
+  }
+
   };
 
   return (
