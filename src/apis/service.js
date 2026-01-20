@@ -1,6 +1,5 @@
 
 let BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
-//const user = JSON.parse(localStorage.getItem("user"));
 
 const apiPOST = async (api, body) => {
   try {
@@ -20,31 +19,51 @@ const apiPOST = async (api, body) => {
 };
 
 const apiGET = async (api) => {
-  let API_URL = `${BASE_URL}/${api}`;
-  // pw7_mode
-  const res = await fetch(API_URL, {
-    headers: {
-      "Content-Type": "application/json",
-      //Authorization: "Bearer " + local_storage_data?.token,
-    },
-  });
-  if (res?.ok) return await res.json();
+  try {
+    const token = localStorage.getItem("token");
 
-  return res;
+    const res = await fetch(`${BASE_URL}/${api}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "API error");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("apiGET error:", error.message);
+    throw error;
+  }
 };
 
 const apiGET_Tokenless = async (api) => {
-  let API_URL = `${BASE_URL}/${api}`;
-  const res = await fetch(API_URL, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-   // referrerPolicy: "no-referrer",
-  });
+  try {
+    const token = localStorage.getItem("token");
 
-  return await res.json();
+    const res = await fetch(`${BASE_URL}/${api}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "API error");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("apiGET error:", error.message);
+    throw error;
+  }
 };
 
 const apiPUT = async (api, body) => {

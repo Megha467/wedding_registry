@@ -1,38 +1,7 @@
-// import { useState } from "react";
-// //import { sendWish } from "../api/api";
-
-// function WishForm({ weddingId }) {
-//   const [message, setMessage] = useState("");
-//   const [loading, setLoading] = useState(false);
-
-//   const submitWish = async () => {
-//     if (!message.trim()) return;
-
-//     setLoading(true);
-//     // await sendWish(weddingId, message);
-//     setMessage("");
-//     setLoading(false);
-//     alert("Wish sent successfully!");
-//   };
-
-//   return (
-//     <div>
-//       <textarea
-//         placeholder="Write your wishes here..."
-//         value={message}
-//         onChange={(e) => setMessage(e.target.value)}
-//       />
-//       <button onClick={submitWish} disabled={loading}>
-//         {loading ? "Sending..." : "Send Wish"}
-//       </button>
-//     </div>
-//   );
-// }
-
-// export default WishForm;
 import { useState } from "react";
-
-function WishForm({ weddingId }) {
+import { apiPOST } from "../apis/service";
+function WishForm({ weddingId, onWishAdded }) {
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     senderName: "",
     relation: "",
@@ -43,39 +12,37 @@ function WishForm({ weddingId }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const submitWish = (e) => {
+  const submitWish = async(e) => {
     e.preventDefault();
 
     if (!form.senderName || !form.message) return;
 
-    const weddingData =
-      JSON.parse(localStorage.getItem("weddingData")) || {};
+    try {
+      setLoading(true);
 
-    const newWish = {
-      id: Date.now(),
-      senderName: form.senderName,
-      relation: form.relation,
-      message: form.message,
-      createdAt: new Date().toISOString(),
-    };
+      const res = await apiPOST(
+        `api/wedding/${weddingId}/wishes`,
+        form
+      );
 
-    weddingData.wishes = [
-      ...(weddingData.wishes || []),
-      newWish,
-    ];
-
-    localStorage.setItem(
-      "weddingData",
-      JSON.stringify(weddingData)
-    );
-
-    setForm({
-      senderName: "",
-      relation: "",
-      message: "",
-    });
-
-    alert("Your wish has been sent ❤️");
+      if (res?.message) {
+        
+        alert("Your wish has been sent ❤️");
+        onWishAdded(res);
+        setForm({
+          senderName: "",
+          relation: "",
+          message: "",
+        });
+      } else {
+        alert("Failed to send wish");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -103,7 +70,9 @@ function WishForm({ weddingId }) {
         required
       />
 
-      <button type="submit">Send Wish</button>
+       <button type="submit" disabled={loading}>
+        {loading ? "Sending..." : "Send Wish"}
+      </button>
     </form>
   );
 }

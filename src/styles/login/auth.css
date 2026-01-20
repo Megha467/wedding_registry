@@ -1,0 +1,87 @@
+/* Page container */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f7f7;
+  padding: 16px;
+}
+
+/* Login card */
+.auth-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Title */
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 1.6rem;
+}
+
+/* Inputs */
+.auth-card input {
+  width: 100%;
+  padding: 12px 4px !important;
+  margin-bottom: 14px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.auth-card input:focus {
+  border-color: #ff5a5f;
+}
+
+/* Button */
+.auth-card button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  background: #ff5a5f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.auth-card button:hover {
+  background: #e14b50;
+}
+
+/* Footer text */
+.auth-card p {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.auth-card a {
+  color: #ff5a5f;
+  text-decoration: none;
+}
+
+/* Error text */
+.auth-error {
+  color: red;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* 🔥 Mobile tweaks */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 20px;
+  }
+
+  .auth-card h2 {
+    font-size: 1.4rem;
+  }
+}

@@ -13,11 +13,11 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
+      {/* Public Dashboard */}
         <Route path="/wedding/:weddingId" element={<WeddingPage />} />
 
         {/* Couple Dashboard */}
-        <Route path="/dashboard/:weddingId" element={<CoupleDashboard />}/>
+        <Route path="/dashboard" element={<CoupleDashboard />}/>
       </Routes>
     </BrowserRouter>
   );

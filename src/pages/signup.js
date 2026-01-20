@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { apiPOST } from "../apis/service";
 function Signup() {
   const navigate = useNavigate();
 
@@ -35,23 +35,44 @@ function Signup() {
     setGifts(gifts.filter((g) => g.id !== id));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
 
-    const weddingData = {
-      weddingId: "1",
-      coupleName: form.coupleName,
-      email: form.email,
-      gifts,
-      wishes: [],
-    };
+  //   const weddingData = {
+  //     weddingId: "1",
+  //     coupleName: form.coupleName,
+  //     email: form.email,
+  //     gifts,
+  //     wishes: [],
+  //   };
 
-    // MOCK SAVE
-    localStorage.setItem("coupleAuth", "true");
-    localStorage.setItem("weddingData", JSON.stringify(weddingData));
+  //   // MOCK SAVE
+  //   localStorage.setItem("coupleAuth", "true");
+  //   localStorage.setItem("weddingData", JSON.stringify(weddingData));
 
-    navigate("/dashboard/1");
+  //   navigate("/dashboard/1");
+  // };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const payload = {
+    coupleName: form.coupleName,
+    email: form.email,
+    password: form.password,
+    weddingTitle: `${form.coupleName} ❤️ Wedding`,
+    gifts: gifts.map((g) => g.name), // 👈 convert to array of strings
   };
+
+  const res = await apiPOST("api/auth/signup", payload);
+  console.log('response is', res);
+  if (res?.message === "Signup successful") {
+    alert("Signup successful. Please login.");
+    navigate("/login");
+  } else {
+    alert(res?.message || "Signup failed");
+  }
+};
 
   return (
     <div className="auth-container">
@@ -80,6 +101,7 @@ function Signup() {
           onChange={handleChange}
           required
         />
+
 
         {/* Gift List Section */}
         <h4>🎁 Gift List</h4>
