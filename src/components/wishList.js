@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 function WishList({ wishes, loading }) {
  
   if (loading) return <p>Loading wishes...</p>;

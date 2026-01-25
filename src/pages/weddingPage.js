@@ -15,6 +15,7 @@ function WeddingPage() {
       const data = await apiGET_Tokenless(
         `api/wedding/${weddingId}/wishes`
       );
+      console.log('data wedding', data)
       setWishes(data || []);
     } catch (err) {
       console.error("Failed to fetch wishes", err);
@@ -29,7 +30,6 @@ function WeddingPage() {
 
   // 🔥 called immediately after sending wish
   const handleWishAdded = (newWish) => {
-    console.log('new wish ', newWish)
     setWishes((prev) => [newWish, ...prev]);
   };
   return (

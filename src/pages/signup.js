@@ -35,24 +35,6 @@ function Signup() {
     setGifts(gifts.filter((g) => g.id !== id));
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const weddingData = {
-  //     weddingId: "1",
-  //     coupleName: form.coupleName,
-  //     email: form.email,
-  //     gifts,
-  //     wishes: [],
-  //   };
-
-  //   // MOCK SAVE
-  //   localStorage.setItem("coupleAuth", "true");
-  //   localStorage.setItem("weddingData", JSON.stringify(weddingData));
-
-  //   navigate("/dashboard/1");
-  // };
-
   const handleSubmit = async (e) => {
   e.preventDefault();
 

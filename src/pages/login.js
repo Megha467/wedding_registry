@@ -20,11 +20,9 @@ function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
+try {
     const res = await apiPOST("api/auth/login", form);
-    // MOCK LOGIN
-     setLoading(false);
-      if (res?.token) {
+    if (res?.token) {
     localStorage.setItem("token", res.token);
     localStorage.setItem("user", JSON.stringify(res.user));
     localStorage.setItem("coupleAuth", "true");
@@ -32,7 +30,13 @@ function Login() {
   } else {
     setError(res?.message || "Login failed");
   }
-  };
+}
+catch (err) {
+    setError("Something went wrong. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="auth-container">
@@ -56,6 +60,7 @@ function Login() {
         />
 
         <button type="submit">Login</button>
+        {error && <p className="error-text">{error}</p>}
 
         <p>
           Don’t have an account?{" "}

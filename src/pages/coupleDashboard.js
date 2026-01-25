@@ -22,6 +22,7 @@ function CoupleDashboard() {
     const fetchDashboard = async () => {
       try {
         const data = await apiGET("api/dashboard");
+        console.log('data of the dash', data);
         setDashboard(data);
       } catch (err) {
         setError(err.message || "Failed to load dashboard");
