@@ -104,24 +104,53 @@ function GiftItem({ gift, onBooked }) {
     }
   };
 
-  return (
-    <div className="gift-card">
+  // return (
+  //   <div className="gift-card">
+  //     <h3>{gift.name}</h3>
+
+  //     {gift.isBooked ? (
+  //       <span className="booked">
+  //         Booked 
+  //         {/* {gift.bookedBy && `by ${gift.bookedBy}`} */}
+  //       </span>
+  //     ) : (
+  //       <>
+  //         {!showInput ? (
+  //           // 👉 STEP 1: show input when clicked
+  //           <button onClick={() => setShowInput(true)}>
+  //             Book Gift
+  //           </button>
+  //         ) : (
+  //           // 👉 STEP 2: input + confirm
+  //           <>
+  //             <input
+  //               type="text"
+  //               placeholder="Your name"
+  //               value={bookedBy}
+  //               onChange={(e) => setBookedBy(e.target.value)}
+  //             />
+
+  //             <button onClick={handleBook} disabled={loading}>
+  //               {loading ? "Booking..." : "Confirm Booking"}
+  //             </button>
+  //           </>
+  //         )}
+  //       </>
+  //     )}
+  //   </div>
+  // );
+
+    return (
+    <div className={`gift-card ${gift.isBooked ? "gift-card--booked" : ""}`}>
       <h3>{gift.name}</h3>
 
       {gift.isBooked ? (
-        <span className="booked">
-          Booked 
-          {/* {gift.bookedBy && `by ${gift.bookedBy}`} */}
-        </span>
+        <span className="booked">Booked</span>
       ) : (
         <>
           {!showInput ? (
-            // 👉 STEP 1: show input when clicked
-            <button onClick={() => setShowInput(true)}>
-              Book Gift
-            </button>
+            <button onClick={() => setShowInput(true)}>Book Gift</button>
           ) : (
-            // 👉 STEP 2: input + confirm
             <>
               <input
                 type="text"
@@ -129,10 +158,18 @@ function GiftItem({ gift, onBooked }) {
                 value={bookedBy}
                 onChange={(e) => setBookedBy(e.target.value)}
               />
-
-              <button onClick={handleBook} disabled={loading}>
-                {loading ? "Booking..." : "Confirm Booking"}
-              </button>
+              <div className="gift-card__actions">
+                <button onClick={handleBook} disabled={loading}>
+                  {loading ? "Booking..." : "Confirm Booking"}
+                </button>
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => { setShowInput(false); setBookedBy(""); }}
+                >
+                  Cancel
+                </button>
+              </div>
             </>
           )}
         </>

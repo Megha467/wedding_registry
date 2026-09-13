@@ -1,112 +1,166 @@
+ :root {
+  --blush: #fdf2f4;
+  --rose: #e85d75;
+  --rose-dark: #c94a63;
+  --gold: #d4a24c;
+  --sage: #8a9a7e;
+  --ink: #3a3335;
+  --muted: #8b8285;
+  --card-bg: #ffffff;
+  --radius: 14px;
+  --shadow: 0 4px 16px rgba(58, 51, 53, 0.08);
+}
+
+body {
+  background: var(--blush);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+/* ===== Header row: title + logout ===== */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.dashboard-header h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  color: var(--rose-dark);
+  margin: 0;
+  font-size: 1.9rem;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.logout-btn:hover {
+  border-color: var(--rose-dark);
+  color: var(--rose-dark);
+}
+
+/* ===== Section cards ===== */
+.container section {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 26px 24px;
+  margin-bottom: 26px;
+}
+
+.container section h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.3rem;
+  margin: 0 0 16px;
+  color: var(--ink);
+  border-bottom: 2px solid var(--blush);
+  padding-bottom: 10px;
+}
+
+/* ===== Gift table ===== */
 .dashboard-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
-}
-
-.dashboard-table th,
-.dashboard-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
+  font-size: 0.9rem;
 }
 
 .dashboard-table th {
-  background: #f3f3f3;
+  text-align: left;
+  background: var(--blush);
+  color: var(--ink);
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dashboard-table th:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.dashboard-table th:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.dashboard-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f1e9eb;
+}
+
+.dashboard-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status coloring: relies on the text content "Booked" vs "Available" */
+.dashboard-table td:nth-child(2) {
+  font-weight: 700;
+}
+
+/* ===== Wishes list ===== */
+.dashboard-wishes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 480px;
+  overflow-y: auto;
 }
 
 .dashboard-wishes li {
-  background: white;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 6px;
+  background: var(--blush);
+  border-radius: 10px;
+  padding: 16px 18px;
 }
 
 .wish-message {
-  font-size: 16px;
-  margin-bottom: 6px;
+  margin: 0 0 8px;
+  font-size: 0.98rem;
+  color: var(--ink);
+  line-height: 1.4;
 }
 
 .wish-meta {
-  font-size: 13px;
-  color: gray;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
-.wish-form input,
-.wish-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-}
-
-.wish-form button {
-  background: #ec4899;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.wish-form button:hover {
-  background: #db2777;
-}
-
-/* Login and Sign up */
-
-/* .auth-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f6f7fb;
-}
-
-.auth-card {
-  background: white;
-  padding: 30px;
-  width: 100%;
-  max-width: 380px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.auth-card h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.auth-card input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-
-.auth-card button {
-  width: 100%;
-  padding: 10px;
-  background: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.auth-card button:hover {
-  background: #4338ca;
-}
-
-.auth-card p {
-  text-align: center;
-  margin-top: 15px;
+.wish-meta strong {
+  color: var(--rose-dark);
 }
 
 @media (max-width: 480px) {
-  .auth-card {
-    padding: 20px;
+  .container {
+    padding: 20px 14px 48px;
   }
-} */
 
+  .dashboard-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .dashboard-table {
+    font-size: 0.78rem;
+  }
+
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 8px 6px;
+  }
+}

@@ -4,6 +4,7 @@ import WishForm from "../components/wishForm";
 import WishList from "../components/wishList";
 import GiftList from "../components/giftList";
 import { apiGET_Tokenless } from "../apis/service";
+import "../styles/publicDashboard/WeddingPage.css";
 function WeddingPage() {
   const { weddingId } = useParams();
 
@@ -34,8 +35,9 @@ function WeddingPage() {
   };
   return (
     <div className="container">
+      <div className="hero">
       <h1>💍 Wedding Wishes & Gifts</h1>
-
+      </div>
       <section>
         <h2>Send Your Wishes ❤️</h2>
         <WishForm weddingId={weddingId}  onWishAdded={handleWishAdded}/>

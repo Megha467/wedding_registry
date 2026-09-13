@@ -41,17 +41,39 @@ function CoupleDashboard() {
   if (error) return <p>{error}</p>;
   if (!dashboard) return <p>No dashboard data</p>;
 
+//   return (
+//     <div className="container">
+//     <button onClick={logout} style={{ float: "right" }}>
+//         Logout
+//     </button>
+    
+//       <h1>💍 Couple Dashboard</h1>
+
+//       <section>
+//         <h2>🎁 Gift Details</h2>
+//         <DashboardGifts  gifts={dashboard.gifts}/>
+//       </section>
+
+//       <section>
+//         <h2>💌 Wishes Received</h2>
+//         <DashboardWishes wishes={dashboard.wishes} />
+//       </section>
+//     </div>
+//   );
+// }
+
   return (
     <div className="container">
-    <button onClick={logout} style={{ float: "right" }}>
-        Logout
-    </button>
-    
-      <h1>💍 Couple Dashboard</h1>
+      <div className="dashboard-header">
+        <h1>💍 Couple Dashboard</h1>
+        <button className="logout-btn" onClick={logout}>
+          Logout
+        </button>
+      </div>
 
       <section>
         <h2>🎁 Gift Details</h2>
-        <DashboardGifts  gifts={dashboard.gifts}/>
+        <DashboardGifts gifts={dashboard.gifts}/>
       </section>
 
       <section>
