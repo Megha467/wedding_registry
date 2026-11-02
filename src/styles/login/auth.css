@@ -75,7 +75,12 @@
   transition: background 0.15s ease, transform 0.1s ease;
 }
 
-.auth-card > button[type="submit"]:hover {
+.auth-card > button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-card > button[type="submit"]:hover:not(:disabled) {
   background: #4a3fc0;
   transform: translateY(-1px);
 }
@@ -95,6 +100,22 @@
 
 .auth-card p a:hover {
   text-decoration: underline;
+}
+
+.auth-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.auth-label span,
+.auth-hint {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
 .error-text {
@@ -139,7 +160,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-height: 50px;
+  max-height: 130px;
   overflow-y: auto;
 }
 

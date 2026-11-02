@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { apiPOST } from "../apis/service";
+import { Link, useNavigate } from "react-router-dom";
+import { publicPOST, saveSession } from "../apis/service";
 import '../styles/login/auth.css';
+
 function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -16,27 +17,22 @@ function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setError("");
     setLoading(true);
-try {
-    const res = await apiPOST("api/auth/login", form);
-    if (res?.token) {
-    localStorage.setItem("token", res.token);
-    localStorage.setItem("user", JSON.stringify(res.user));
-    localStorage.setItem("coupleAuth", "true");
-    navigate(`/dashboard`);
-  } else {
-    setError(res?.message || "Login failed");
-  }
-}
-catch (err) {
-    setError("Something went wrong. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+
+    try {
+      const res = await publicPOST("api/auth/login", form);
+      saveSession(res);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="auth-container">
@@ -47,6 +43,7 @@ catch (err) {
           type="email"
           name="email"
           placeholder="Email"
+          value={form.email}
           onChange={handleChange}
           required
         />
@@ -55,16 +52,18 @@ catch (err) {
           type="password"
           name="password"
           placeholder="Password"
+          value={form.password}
           onChange={handleChange}
           required
         />
 
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
         {error && <p className="error-text">{error}</p>}
 
         <p>
-          Don’t have an account?{" "}
-          <a href="/signup">Sign up</a>
+          Don’t have an account? <Link to="/signup">Sign up</Link>
         </p>
       </form>
     </div>

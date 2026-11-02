@@ -1,4 +1,4 @@
- :root {
+:root {
   --blush: #fdf2f4;
   --rose: #e85d75;
   --rose-dark: #c94a63;
@@ -15,8 +15,8 @@ body {
   background: var(--blush);
 }
 
-.container {
-  max-width: 900px;
+.container.dashboard-container {
+  max-width: 1100px;
   margin: 0 auto;
   padding: 32px 20px 64px;
 }
@@ -26,7 +26,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .dashboard-header h1 {
@@ -34,6 +35,12 @@ body {
   color: var(--rose-dark);
   margin: 0;
   font-size: 1.9rem;
+}
+
+.dashboard-subtitle {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .logout-btn {
@@ -53,8 +60,51 @@ body {
   color: var(--rose-dark);
 }
 
-/* ===== Section cards ===== */
-.container section {
+/* ===== Tabs ===== */
+.dashboard-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin-bottom: 22px;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.dashboard-tab {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dashboard-tab:hover {
+  color: var(--rose-dark);
+}
+
+.dashboard-tab--active {
+  background: var(--card-bg);
+  color: var(--rose-dark);
+  box-shadow: var(--shadow);
+}
+
+.tab-count {
+  background: var(--rose);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  padding: 1px 7px;
+}
+
+/* ===== Cards ===== */
+.dashboard-card {
   background: var(--card-bg);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -62,7 +112,7 @@ body {
   margin-bottom: 26px;
 }
 
-.container section h2 {
+.dashboard-card h2 {
   font-family: "Playfair Display", Georgia, serif;
   font-size: 1.3rem;
   margin: 0 0 16px;
@@ -71,7 +121,91 @@ body {
   padding-bottom: 10px;
 }
 
-/* ===== Gift table ===== */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 2px solid var(--blush);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+}
+
+.card-header h2 {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.inline-panel {
+  background: var(--blush);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+/* ===== Overview ===== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-card__value {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--rose-dark);
+}
+
+.stat-card__label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.stat-card__detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.share-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.share-row__url {
+  flex: 1 1 260px;
+  min-width: 0;
+  border: 1px solid #e8dfe1;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 0.88rem;
+  background: var(--blush);
+  color: var(--ink);
+}
+
+/* ===== Tables ===== */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .dashboard-table {
   width: 100%;
   border-collapse: collapse;
@@ -83,9 +217,10 @@ body {
   background: var(--blush);
   color: var(--ink);
   padding: 10px 12px;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 .dashboard-table th:first-child {
@@ -99,15 +234,106 @@ body {
 .dashboard-table td {
   padding: 12px;
   border-bottom: 1px solid #f1e9eb;
+  vertical-align: top;
 }
 
 .dashboard-table tr:last-child td {
   border-bottom: none;
 }
 
-/* Status coloring: relies on the text content "Booked" vs "Available" */
-.dashboard-table td:nth-child(2) {
-  font-weight: 700;
+.dashboard-table a {
+  color: var(--rose-dark);
+  font-weight: 600;
+}
+
+.cell-note {
+  margin-top: 3px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  max-width: 260px;
+}
+
+.cell-contact {
+  font-size: 0.82rem;
+  word-break: break-all;
+  min-width: 140px;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.dashboard-table .row-actions a.btn {
+  color: inherit;
+}
+
+.dashboard-table .row-actions a.btn-whatsapp {
+  color: #fff;
+}
+
+/* ===== Invites ===== */
+.summary-line {
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.chip {
+  background: #fff;
+  border: 1px solid #e8dfe1;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.chip--active {
+  background: var(--rose);
+  border-color: var(--rose);
+  color: #fff;
+}
+
+.rsvp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rsvp-form .muted {
+  margin: 0;
+}
+
+.choice-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #e8dfe1;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.choice--active {
+  border-color: var(--rose);
+  background: var(--blush);
 }
 
 /* ===== Wishes list ===== */
@@ -147,7 +373,7 @@ body {
 }
 
 @media (max-width: 480px) {
-  .container {
+  .container.dashboard-container {
     padding: 20px 14px 48px;
   }
 
@@ -155,12 +381,29 @@ body {
     font-size: 1.4rem;
   }
 
+  .dashboard-card {
+    padding: 20px 16px;
+  }
+
   .dashboard-table {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
   }
 
   .dashboard-table th,
   .dashboard-table td {
     padding: 8px 6px;
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-card__value {
+    font-size: 1.4rem;
   }
 }

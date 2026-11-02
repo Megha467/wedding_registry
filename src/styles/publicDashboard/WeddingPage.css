@@ -29,7 +29,7 @@ h1, h2, h3 {
   color: var(--ink);
 }
 
-/* ===== Hero header (add this section in WeddingPage.jsx) ===== */
+/* ===== Hero header ===== */
 .hero {
   text-align: center;
   padding: 40px 20px 32px;
@@ -46,6 +46,34 @@ h1, h2, h3 {
   color: var(--muted);
   font-size: 1rem;
   letter-spacing: 0.03em;
+  margin: 4px 0;
+}
+
+.hero .hero-eyebrow {
+  color: var(--gold);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.hero .hero-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  margin: 0 0 10px;
+}
+
+.hero .hero-description {
+  max-width: 560px;
+  margin: 16px auto 0;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.not-found {
+  margin-top: 60px;
 }
 
 /* ===== Section cards ===== */
@@ -115,6 +143,13 @@ section h2 {
 .wish-form button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.wish-form .char-count {
+  align-self: flex-end;
+  margin-top: -6px;
+  font-size: 0.75rem;
+  color: var(--muted);
 }
 
 /* ===== Wish list ===== */
@@ -200,6 +235,38 @@ section h2 {
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 0.85rem;
+}
+
+.gift-card__desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.gift-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.gift-card__meta a {
+  color: var(--rose-dark);
+}
+
+.gift-card__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gift-card__error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--rose-dark);
 }
 
 .gift-card__actions {

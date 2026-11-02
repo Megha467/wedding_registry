@@ -1,121 +1,101 @@
+const BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
-let BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+const RATE_LIMIT_MESSAGE =
+  "Too many attempts, please wait a few minutes and try again.";
 
-const apiPOST = async (api, body) => {
+// ---- Session (token + user in localStorage) ----
+
+const getToken = () => localStorage.getItem("token");
+
+const getStoredUser = () => {
   try {
-    const res = await fetch(`${BASE_URL}/${api}`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    return data;
-  } catch (error) {
-   console.log('error is', error)
+    return JSON.parse(localStorage.getItem("user")) || null;
+  } catch {
+    return null;
   }
 };
 
-const apiGET = async (api) => {
+// user is the backend's user object; weddingId is kept alongside it.
+// With a token this starts a new session; without one it updates the stored user.
+const saveSession = ({ token, user, weddingId }) => {
+  if (token) localStorage.setItem("token", token);
+  const stored = token ? {} : getStoredUser() || {};
+  localStorage.setItem(
+    "user",
+    JSON.stringify({ ...stored, ...user, ...(weddingId ? { weddingId } : {}) })
+  );
+};
+
+const clearSession = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("coupleAuth");
+};
+
+// ---- Requests ----
+
+const apiError = (message, status) => {
+  const error = new Error(message);
+  error.status = status;
+  return error;
+};
+
+// Throws an Error with .message (from the backend) and .status on any non-2xx.
+const request = async (method, path, body, { auth = true } = {}) => {
+  const headers = { Accept: "application/json" };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+
+  const token = auth ? getToken() : null;
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  let res;
   try {
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(`${BASE_URL}/${api}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    res = await fetch(`${BASE_URL}/${path}`, {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
     });
+  } catch {
+    throw apiError("Could not reach the server. Please check your connection and try again.", 0);
+  }
 
-    const data = await res.json();
+  const data = await res.json().catch(() => null);
 
-    if (!res.ok) {
-      throw new Error(data.message || "API error");
+  if (!res.ok) {
+    if (res.status === 401 && auth) {
+      clearSession();
+      window.location.assign("/login");
     }
-
-    return data;
-  } catch (error) {
-    console.error("apiGET error:", error.message);
-    throw error;
+    const message =
+      res.status === 429
+        ? RATE_LIMIT_MESSAGE
+        : data?.message || `Request failed (${res.status})`;
+    throw apiError(message, res.status);
   }
+
+  return data;
 };
 
-const apiGET_Tokenless = async (api) => {
-  try {
-    const token = localStorage.getItem("token");
+// Authed (couple dashboard)
+const apiGET = (path) => request("GET", path);
+const apiPOST = (path, body) => request("POST", path, body);
+const apiPUT = (path, body) => request("PUT", path, body);
+const apiDELETE = (path) => request("DELETE", path);
 
-    const res = await fetch(`${BASE_URL}/${api}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "API error");
-    }
-
-    return data;
-  } catch (error) {
-    console.error("apiGET error:", error.message);
-    throw error;
-  }
-};
-
-const apiPUT = async (api, body) => {
-  
-  const res = await fetch(`${BASE_URL}/${api}`, {
-    method: "PUT",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      //Authorization: "Bearer " + local_storage_data?.token,
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (res?.ok) return await res.json();
-  return res;
-};
-
-const apiDELETE = async (api, body) => {
-  const local_storage_data = JSON.parse(localStorage.getItem("user"));
-
-  const res = await fetch(`${BASE_URL}/${api}`, {
-    method: "DELETE",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      //Authorization: "Bearer " + local_storage_data?.token,
-    },
-    body: JSON.stringify(body),
-  });
-
-  return await res.json();
-};
-
-const apiDELETETokenless = async (api, body) => {
-  const res = await fetch(`${BASE_URL}/${api}`, {
-    method: "DELETE",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-
-  return await res.json();
-};
+// Public (guests, login, signup)
+const publicGET = (path) => request("GET", path, undefined, { auth: false });
+const publicPOST = (path, body) => request("POST", path, body, { auth: false });
 
 export {
-  apiPOST,
+  request,
   apiGET,
-  apiDELETE,
+  apiPOST,
   apiPUT,
-  apiGET_Tokenless,
-  apiDELETETokenless,
+  apiDELETE,
+  publicGET,
+  publicPOST,
+  getToken,
+  getStoredUser,
+  saveSession,
+  clearSession,
 };

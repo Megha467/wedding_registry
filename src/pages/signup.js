@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { apiPOST } from "../apis/service";
+import { Link, useNavigate } from "react-router-dom";
+import { publicPOST, saveSession } from "../apis/service";
+import '../styles/login/auth.css';
+
+const MIN_PASSWORD = 6;
+
 function Signup() {
   const navigate = useNavigate();
 
@@ -8,10 +12,13 @@ function Signup() {
     coupleName: "",
     email: "",
     password: "",
+    weddingDate: "",
   });
 
   const [giftInput, setGiftInput] = useState("");
   const [gifts, setGifts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,14 +27,7 @@ function Signup() {
   const addGift = () => {
     if (!giftInput.trim()) return;
 
-    setGifts([
-      ...gifts,
-      {
-        id: Date.now(),
-        name: giftInput,
-        isBooked: false,
-      },
-    ]);
+    setGifts([...gifts, { id: Date.now(), name: giftInput.trim() }]);
     setGiftInput("");
   };
 
@@ -36,25 +36,39 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    if (loading) return;
+    setError("");
 
-  const payload = {
-    coupleName: form.coupleName,
-    email: form.email,
-    password: form.password,
-    weddingTitle: `${form.coupleName} ❤️ Wedding`,
-    gifts: gifts.map((g) => g.name), // 👈 convert to array of strings
+    if (form.password.length < MIN_PASSWORD) {
+      setError(`Password must be at least ${MIN_PASSWORD} characters`);
+      return;
+    }
+
+    const payload = {
+      coupleName: form.coupleName.trim(),
+      email: form.email.trim(),
+      password: form.password,
+      weddingTitle: `${form.coupleName.trim()} ❤️ Wedding`,
+      gifts: gifts.map((g) => g.name),
+      ...(form.weddingDate ? { weddingDate: form.weddingDate } : {}),
+    };
+
+    setLoading(true);
+    try {
+      const res = await publicPOST("api/auth/signup", payload);
+      if (res?.token) {
+        saveSession(res);
+        navigate("/dashboard");
+      } else {
+        setError(res?.message || "Signup failed");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const res = await apiPOST("api/auth/signup", payload);
-  console.log('response is', res);
-  if (res?.message === "Signup successful") {
-    alert("Signup successful. Please login.");
-    navigate("/login");
-  } else {
-    alert(res?.message || "Signup failed");
-  }
-};
 
   return (
     <div className="auth-container">
@@ -64,6 +78,7 @@ function Signup() {
         <input
           name="coupleName"
           placeholder="Couple Name"
+          value={form.coupleName}
           onChange={handleChange}
           required
         />
@@ -72,6 +87,7 @@ function Signup() {
           type="email"
           name="email"
           placeholder="Email"
+          value={form.email}
           onChange={handleChange}
           required
         />
@@ -79,42 +95,67 @@ function Signup() {
         <input
           type="password"
           name="password"
-          placeholder="Password"
+          placeholder={`Password (at least ${MIN_PASSWORD} characters)`}
+          value={form.password}
           onChange={handleChange}
+          minLength={MIN_PASSWORD}
           required
         />
 
+        <label className="auth-label">
+          Wedding date <span>(optional)</span>
+          <input
+            type="date"
+            name="weddingDate"
+            value={form.weddingDate}
+            onChange={handleChange}
+          />
+        </label>
 
-        {/* Gift List Section */}
-        <h4>🎁 Gift List</h4>
+        <h4>🎁 Gift List <span className="auth-hint">(optional, you can add more later)</span></h4>
 
         <div className="gift-input-row">
           <input
             placeholder="Add gift (e.g. Dinner Set)"
             value={giftInput}
             onChange={(e) => setGiftInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addGift();
+              }
+            }}
           />
           <button type="button" onClick={addGift}>
             Add
           </button>
         </div>
 
-        <ul className="gift-preview">
-          {gifts.map((gift) => (
-            <li key={gift.id}>
-              {gift.name}
-              <span onClick={() => removeGift(gift.id)}>✕</span>
-            </li>
-          ))}
-        </ul>
+        {gifts.length > 0 && (
+          <ul className="gift-preview">
+            {gifts.map((gift) => (
+              <li key={gift.id}>
+                {gift.name}
+                <span
+                  role="button"
+                  aria-label={`Remove ${gift.name}`}
+                  onClick={() => removeGift(gift.id)}
+                >
+                  ✕
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
 
-        <button type="submit">Create Account</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating account..." : "Create Account"}
+        </button>
+        {error && <p className="error-text">{error}</p>}
 
         <p>
-          Already have an account?{" "}
-          <a href="/login">Login</a>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
-        
       </form>
     </div>
   );

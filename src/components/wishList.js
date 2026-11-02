@@ -1,9 +1,6 @@
-function WishList({ wishes, loading }) {
- 
-  if (loading) return <p>Loading wishes...</p>;
-
+function WishList({ wishes }) {
   if (!wishes.length)
-    return <p>No wishes available 💌</p>;
+    return <p>No wishes yet. Be the first to send one 💌</p>;
 
   return (
     <ul className="wish-list">

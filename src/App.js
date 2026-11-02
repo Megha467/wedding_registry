@@ -1,27 +1,40 @@
 import './App.css';
+import './styles/common/common.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import WeddingPage from "./pages/weddingPage";
 import CoupleDashboard from './pages/coupleDashboard';
+import InvitePage from './pages/invitePage';
 import Login from './pages/login';
 import Signup from './pages/signup';
+import RequireAuth from './components/requireAuth';
+import { ToastProvider } from './components/toast';
 
 function App() {
   return (
-    <BrowserRouter>
-    {/* <h1>Hello</h1> */}
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-      {/* Public Dashboard */}
-        <Route path="/wedding/:weddingId" element={<WeddingPage />} />
+    <ToastProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
-        {/* Couple Dashboard */}
-        <Route path="/dashboard" element={<CoupleDashboard />}/>
-      </Routes>
-    </BrowserRouter>
+          {/* Public pages */}
+          <Route path="/wedding/:weddingId" element={<WeddingPage />} />
+          <Route path="/invite/:inviteCode" element={<InvitePage />} />
+
+          {/* Couple Dashboard */}
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <CoupleDashboard />
+              </RequireAuth>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </ToastProvider>
   );
 }
 
 export default App;
-
